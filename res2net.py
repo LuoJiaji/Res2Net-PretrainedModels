@@ -185,7 +185,7 @@ def res2net101_26w_4s(pretrained=False, **kwargs):
     """
     model = Res2Net(Bottle2neck, [3, 4, 23, 3], baseWidth = 26, scale = 4, **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['res2net101_26w_4s']))
+        model.load_state_dict(model_zoo.load_url(model_urls['res2net101_26w_4s'], map_location='cpu'))
     return model
 
 def res2net50_26w_6s(pretrained=False, **kwargs):
@@ -231,7 +231,17 @@ def res2net50_14w_8s(pretrained=False, **kwargs):
 
 
 if __name__ == '__main__':
-    images = torch.rand(1, 3, 224, 224).cuda(0)
-    model = res2net101_26w_4s(pretrained=True)
-    model = model.cuda(0)
+    # images = torch.rand(1, 3, 224, 224).cuda(0)
+    images = torch.rand(1, 3, 224, 224)
+
+    # model = res2net101_26w_4s(pretrained=True)
+    model = res2net50()
+    # model = model.cuda(0)
+    # model = model
+    print(model)
     print(model(images).size())
+    
+    from torchviz import make_dot
+    
+    g=make_dot(model(images),params=dict(model.named_parameters()))
+    g.view()
